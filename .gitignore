@@ -7,4 +7,6 @@ __pycache__/
 env/
 *.csv
 *.txt
+
 *.sqlite
+*.complete
