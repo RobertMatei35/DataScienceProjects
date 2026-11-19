@@ -4,6 +4,8 @@
 
 This project explores whether historical Formula 1 results can help rank drivers by their relative strength to win the United States Grand Prix at Austin. It starts from the foundation laid by Mariana Antaya in her webinar; her original [Google Colab notebook](https://colab.research.google.com/drive/1LCRUTXCdFeNUbsTaUxZobRS_xXJJ9-xf?usp=sharing) is linked here.
 
+This project includes both the notebook from the webinar, kept under its original name [Austin_GP_Winner_Predictor](./Austin_GP_Winner_Predictor.ipynb), and my version, [Austin_GP_Winner_Predictor_MyTry](./Austin_GP_Winner_Predictor_MyTry.ipynb).
+
 The notebook extends that starting point with API-based data collection, features built from driver, team, and Austin circuit history, a chronological holdout evaluation, and a comparison with a simple recent-form baseline. Its scores are rankings, not calibrated win probabilities or predictions of finishing positions.
 
 ## 2. Data description
