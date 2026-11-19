@@ -8,12 +8,12 @@ The portofolio consists of data science and machine-learning projects, primarily
 
 | Project | Main learning focus | Notebook | Availability |
 |---|---|---|---|
-| House Price Regression | Building and evaluating a regression model for house prices. | [Open notebook](Beginner/HousePriceRegression/HousePriceRegression.ipynb) | On `main` |
-| Telco Customer Churn | Preparing customer data and building a classification model to predict churn. | [Open notebook](Beginner/TelcoCustomerChurn/TelcoCustomerChurn.ipynb) | On `main` |
-| Craigslist Used Car Price | Working on data cleaning and building a regression model to estimate used-car prices. | [Open notebook](https://github.com/RobertMatei35/DataScienceProjects/blob/CraigslistUsedCares/Beginner/CraigslistUsedCars/CraigslistUsedCars.ipynb) | On `CraigslistUsedCares` |
-| Residential EV Charging | Data processing, feature extaction and using unsupervised learning to identify user and charging patterns. | [Open notebook](https://github.com/RobertMatei35/DataScienceProjects/blob/EVCharging/Beginner/EVCharging/ResidentialEVCharging.ipynb) | On `EVCharging` |
-| Battery Remaining Useful Life (RUL) Estimator | Practicing an industry-oriented workflow and using Keras to build an ANN for battery RUL estimation. | [Open notebook](https://github.com/RobertMatei35/DataScienceProjects/blob/Battery_RUL_Estimator/Intermediate/Battery_RUL_Estimator/Battery_RUL_Estimator.ipynb) | On `Battery_RUL_Estimator` |
-| Austin Grand Prix Winner Prediction | Collecting and processing Formula 1 data from APIs, then applying machine learning to motorsport. | [Open notebook](https://github.com/RobertMatei35/DataScienceProjects/blob/F1_AustinGP_WinnerPrediction/Intermediate/Formula1/AustinGP_WinnerPredictor/Austin_GP_Winner_Predictor.ipynb) | On `F1_AustinGP_WinnerPrediction` |
+| House Price Regression | Building and evaluating a regression model for house prices. | [Open folder](Beginner/HousePriceRegression) | On `main` |
+| Telco Customer Churn | Preparing customer data and building a classification model to predict churn. | [Open folder](Beginner/TelcoCustomerChurn/) | On `main` |
+| Craigslist Used Car Price | Working on data cleaning and building a regression model to estimate used-car prices. | [Open folder](https://github.com/RobertMatei35/DataScienceProjects/blob/CraigslistUsedCares/Beginner/CraigslistUsedCars/) | On `CraigslistUsedCares` |
+| Residential EV Charging | Data processing, feature extaction and using unsupervised learning to identify user and charging patterns. | [Open folder](https://github.com/RobertMatei35/DataScienceProjects/blob/EVCharging/Beginner/EVCharging/) | On `EVCharging` |
+| Battery Remaining Useful Life (RUL) Estimator | Practicing an industry-oriented workflow and using Keras to build an ANN for battery RUL estimation. | [Open folder](https://github.com/RobertMatei35/DataScienceProjects/blob/Battery_RUL_Estimator/Intermediate/Battery_RUL_Estimator/) | On `Battery_RUL_Estimator` |
+| Austin Grand Prix Winner Prediction | Collecting and processing Formula 1 data from APIs, then applying machine learning to motorsport. | [Open folder](https://github.com/RobertMatei35/DataScienceProjects/blob/F1_AustinGP_WinnerPrediction/Intermediate/Formula1/AustinGP_WinnerPredictor/) | On `F1_AustinGP_WinnerPrediction` |
 
 ## Getting started
 
