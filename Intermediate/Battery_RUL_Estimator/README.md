@@ -2,36 +2,44 @@
 
 ## 1. Project description
 
-This notebook explores using a Keras artificial neural network (ANN) to estimate battery aging from charge and discharge measurements. It builds cycle-level features for battery B0005 and trains the network to predict discharge capacity, from which State of Health (SOH) and Remaining Useful Life (RUL) are derived. The work is inspired by Kumar's study of battery SOH and RUL estimation [1]. For additional context on machine-learning approaches to these tasks, see [2].
+This notebook explores using a Keras artificial neural network (ANN) to estimate battery aging from charge and discharge measurements. It builds cycle-level features for four NASA batteries (B0005, B0006, B0007, B0018) and trains the network to predict discharge capacity, from which State of Health (SOH) and Remaining Useful Life (RUL) are derived. The ANN is compared with simple baseline models. The work is inspired by Kumar's study of battery SOH and RUL estimation [1]. For additional context on machine-learning approaches to these tasks, see [2].
 
-The notebook focuses on one battery and is an exploratory modeling project, not an industry-validated RUL system. The model predicts capacity; it does not directly train on RUL as its target.
+This is an exploratory modeling project, not an industry-validated RUL system. The model predicts capacity; it does not directly train on RUL as its target.
 
 ## 2. Data description
 
-The notebook downloads the [NASA Battery dataset on Kaggle](https://www.kaggle.com/datasets/patrickfleith/nasa-battery-dataset), which provides battery cycling data in CSV form. The referenced [NASA Battery Aging dataset files](https://labinfo.ing.he-arc.ch/gitlab/ticc/16TICc19/nasa-battery-dataset/-/tree/614f3518915079a5182655cadc3492973ac90d6c/data/BatteryAgingARC-FY08Q4) contain charge, discharge, and impedance measurements across repeated cycles. This notebook focuses on battery **B0005**.
+The notebook uses the [NASA Battery dataset on Kaggle](https://www.kaggle.com/datasets/patrickfleith/nasa-battery-dataset), which provides battery cycling data in CSV form. The referenced [NASA Battery Aging dataset files](https://labinfo.ing.he-arc.ch/gitlab/ticc/16TICc19/nasa-battery-dataset/-/tree/614f3518915079a5182655cadc3492973ac90d6c/data/BatteryAgingARC-FY08Q4) contain charge, discharge, and impedance measurements across repeated cycles. The four batteries were tested under the same conditions.
 
-Measurements include voltage, current, temperature, and time during charge and discharge operations. Discharge capacity is used as the model target. SOH is calculated relative to an initial capacity of 2 Ah, and the notebook creates an RUL value from the cycle's position in the battery's recorded lifetime.
+Measurements include voltage, current, temperature, and time during charge and discharge operations. Discharge capacity is used as the model target. SOH is calculated relative to an initial capacity of 2 Ah. RUL is derived from the cycle's position in the battery's recorded lifetime (cycles remaining until the end of the test).
 
 ## 3. Machine-learning workflow
 
-1. **Load and inspect the data:** Download the CSV dataset, use its metadata to identify B0005 cycle files, and examine sample charge and discharge profiles.
+1. **Load and inspect the data:** Use the metadata to identify the cycle files of each battery and examine sample charge and discharge profiles.
 2. **Prepare cycle pairs:** Inspect and remove duplicate operations, then pair consecutive charge and discharge records to represent complete cycles.
-3. **Engineer features:** Extract charge constant-current and constant-voltage durations, charge-start voltage, maximum charge and discharge temperatures, minimum discharge voltage, and the rest interval between cycles. Represent unusually long and short rests as separate, exponentially decaying signals relative to each battery's median log-transformed observed rest interval; each signal has a three-cycle half-life. The first cycle has no preceding rest interval and starts with neutral rest signals. Derive SOH and RUL from capacity and cycle order.
-4. **Select model inputs:** Use eight standardized inputs—charge CC and CV times, starting voltage, maximum charge and discharge temperatures, minimum discharge voltage, and separate decaying rest-recovery and rest-shortfall signals—to predict capacity. Discharge time is excluded because, under the fixed-current conditions in the data, it is directly related to capacity.
-5. **Train the ANN:** Train a fully connected Keras network with five hidden dense layers and a linear capacity output. Standardize features and target, use Adam with mean squared error, and apply early stopping.
-6. **Evaluate:** Randomly split cycle rows into training and test subsets (80/20), then compare predicted and measured capacity and inspect residuals and derived SOH.
+3. **Engineer features:** Extract charge constant-current and constant-voltage durations, charge-start voltage, charge and discharge temperature rise (max - min of the cycle), minimum discharge voltage, and the rest interval between cycles. Rest intervals become two exponentially decaying signals (unusually long and unusually short rests, relative to each battery's median, three-cycle half-life). Derive SOH and RUL from capacity and cycle order.
+4. **Select model inputs:** Use eight standardized inputs to predict capacity. Discharge time is excluded because, at constant current, it is directly related to capacity. Temperature is used as a rise rather than a maximum, since the batteries start charging at different temperatures (B0018 is warmer) and the maximum mostly identifies the battery.
+5. **Train baselines:** Fit a training-mean Dummy regressor, Ridge regression and XGBoost on the same split as reference scores.
+6. **Train the ANN:** Fully connected Keras network with six hidden dense layers (12-18-24-24-18-12, ReLU, L2 regularization) and a linear capacity output. Features and target are standardized, with Adam, mean squared error and early stopping. A fixed seed makes runs reproducible.
+7. **Evaluate:** Randomly split all cycle rows into training, validation and test sets (60/20/20), then compare the ANN with the baselines on MAE (in SOH points) and R², and inspect residuals and SOH predictions per battery.
 
 ## 4. Result overview
 
-The notebook reports an **R² of 0.9845** for capacity predictions on its 34-row test split. This is a result from one random split of B0005 cycle records, not evidence that the model generalizes to other batteries.
+Results on the 126-row random test split (seed 42):
 
-The test subset is also passed to Keras as validation data for early stopping, so it is used during model training as well as for the reported evaluation. The result should therefore be treated as an exploratory score rather than a fully independent test estimate.
+| Model | MAE [SOH %] | R² |
+|---|---|---|
+| XGBoost | 0.75 | 0.987 |
+| ANN | 1.00 | 0.974 |
+| Ridge | 1.28 | 0.972 |
+| Training mean (Dummy) | 8.63 | -0.019 |
+
+The test split is random at row level, so neighbouring cycles of the same battery appear in both training and test data. These scores show interpolation between known cycles, not generalization to an unseen battery.
 
 ## 5. Conclusions
 
-The notebook demonstrates a complete feature-engineering and ANN workflow for battery-cycle data, with capacity as an intermediate measure for SOH and RUL. Its high saved R² is encouraging for this single-battery experiment, but the small, randomly split set of cycles and reuse of the test subset for early stopping limit what can be concluded.
+The features carry a clear aging signal: even Ridge regression reaches R² 0.97, and the nonlinear models improve on it moderately. The ANN does not beat XGBoost, which needs no validation set or early stopping, so the ANN is not justified on this data. The ANN also ran all 100 epochs without early stopping, so the network is probably larger than needed.
 
-Next steps consists of the inclusion of multiple datasets B006, B007, B0018 that were tested in the same condition as B0005 and testing of RNN or LSTM neurons. The usage of increased number of datasets and various types of neurons will demonstrate the viability of the ANN. 
+Next steps are leave-one-battery-out cross-validation (to measure performance on an unseen battery), ANN runs with several seeds, a smaller network, and testing of RNN or LSTM layers.
 
 ## 6. References
 
